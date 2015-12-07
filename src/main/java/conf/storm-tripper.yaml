@@ -1,0 +1,6 @@
+---
+aggregate:
+- message
+- message country
+- country
+- message content

@@ -9,6 +9,8 @@ import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import model.ReportingMessage;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -18,6 +20,7 @@ import java.util.Random;
 public class RandomRptMsgSpout extends BaseRichSpout {
     SpoutOutputCollector _collector;
     Random _rand;
+    List<String> aggregateFields;
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -28,6 +31,11 @@ public class RandomRptMsgSpout extends BaseRichSpout {
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         _collector = collector;
         _rand = new Random();
+        aggregateFields = new LinkedList<String>();
+
+        for(Object key : conf.keySet()){
+            aggregateFields.add((String) key);
+        }
     }
 
     @Override
@@ -39,7 +47,11 @@ public class RandomRptMsgSpout extends BaseRichSpout {
 
         ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
                 contentIDsSet[_rand.nextInt(contentIDsSet.length)],
-                contentIDsSet[_rand.nextInt(contentIDsSet.length)]);
+                countrySet[_rand.nextInt(countrySet.length)]);
+
+        for(String aggregateField: aggregateFields){
+            String aggregateKey = message.getAggregationKey();
+        }
 
         _collector.emit(new Values(message));
     }

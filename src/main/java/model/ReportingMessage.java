@@ -7,7 +7,6 @@ public class ReportingMessage {
     private String messageId;
     private String contentId;
     private String country;
-    private String aggregationKey;
 
     private int impressions;
     private int clicks;
@@ -58,11 +57,9 @@ public class ReportingMessage {
         this.clicks = clicks;
     }
 
-    public String getAggregationKey() {
-        return aggregationKey;
+    public String getAggregationKey(String aggregateFields) {
+        String aggregateKey = "";
+        return aggregateKey;
     }
 
-    public void setAggregationKey(String aggregationKey) {
-        this.aggregationKey = aggregationKey;
-    }
 }

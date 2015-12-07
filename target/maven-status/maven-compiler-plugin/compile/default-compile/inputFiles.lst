@@ -1,2 +1,4 @@
-/Users/Yiyong/IdeaProjects/storm/examples/storm-tripper/src/main/java/spout/RandomRptMsgSpout.java
-/Users/Yiyong/IdeaProjects/storm/examples/storm-tripper/src/main/java/model/ReportingMessage.java
+/Users/Yiyong/IdeaProjects/storm-tripper/src/main/java/model/ReportingMessage.java
+/Users/Yiyong/IdeaProjects/storm-tripper/src/main/java/InGameMsgRptTopology.java
+/Users/Yiyong/IdeaProjects/storm-tripper/src/main/java/spout/RandomRptMsgSpout.java
+/Users/Yiyong/IdeaProjects/storm-tripper/src/main/java/bolt/GenericAggregationBolt.java

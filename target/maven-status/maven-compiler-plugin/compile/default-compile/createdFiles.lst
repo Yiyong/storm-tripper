@@ -1,2 +1,4 @@
 spout/RandomRptMsgSpout.class
+bolt/GenericAggregationBolt.class
 model/ReportingMessage.class
+InGameMsgRptTopology.class

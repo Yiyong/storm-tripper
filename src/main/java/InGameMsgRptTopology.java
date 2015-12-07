@@ -1,4 +1,5 @@
 import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.tuple.Fields;
 import bolt.GenericAggregationBolt;
 import spout.RandomRptMsgSpout;
 
@@ -11,7 +12,7 @@ public class InGameMsgRptTopology {
 
         topologyBuilder.setSpout("spout", new RandomRptMsgSpout(), 5);
 
-        topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5);
+        topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5).fieldsGrouping("spout", new Fields());
 
     }
 }
