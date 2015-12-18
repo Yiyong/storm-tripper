@@ -1,5 +1,7 @@
 package model;
 
+import java.util.List;
+
 /**
  * Created by Yiyong on 12/6/15.
  */
@@ -57,9 +59,19 @@ public class ReportingMessage {
         this.clicks = clicks;
     }
 
-    public String getAggregationKey(String aggregateFields) {
-        String aggregateKey = "";
-        return aggregateKey;
+    public String getAggregationKey(List<String> aggregateFields) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(String field : aggregateFields){
+            if (field.equals("message")) {
+                stringBuilder.append("msg").append(messageId);
+            }
+            if (field.equals("content")) {
+                stringBuilder.append("cnt").append(contentId);
+            }
+            if(field.equals("country")) {
+                stringBuilder.append("ctr").append(country);
+            }
+        }
+        return stringBuilder.toString();
     }
-
 }

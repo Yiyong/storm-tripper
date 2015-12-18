@@ -8,11 +8,9 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import model.ReportingMessage;
+import utils.PropertiesReader;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Yiyong on 11/29/15.
@@ -20,22 +18,16 @@ import java.util.Random;
 public class RandomRptMsgSpout extends BaseRichSpout {
     SpoutOutputCollector _collector;
     Random _rand;
-    List<String> aggregateFields;
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("message"));
+        declarer.declare(new Fields("key", "impressions", "clicks"));
     }
 
     @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         _collector = collector;
         _rand = new Random();
-        aggregateFields = new LinkedList<String>();
-
-        for(Object key : conf.keySet()){
-            aggregateFields.add((String) key);
-        }
     }
 
     @Override
@@ -49,10 +41,10 @@ public class RandomRptMsgSpout extends BaseRichSpout {
                 contentIDsSet[_rand.nextInt(contentIDsSet.length)],
                 countrySet[_rand.nextInt(countrySet.length)]);
 
-        for(String aggregateField: aggregateFields){
-            String aggregateKey = message.getAggregationKey();
+        List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
+        for(List<String> aggregateField: aggregateFields){
+            String aggregateKey = message.getAggregationKey(aggregateField);
+            _collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
         }
-
-        _collector.emit(new Values(message));
     }
 }

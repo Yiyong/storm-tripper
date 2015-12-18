@@ -4,6 +4,7 @@ import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
+import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import model.ReportingMessage;
@@ -25,27 +26,30 @@ public class GenericAggregationBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple input) {
-        ReportingMessage message = (ReportingMessage) input.getValue(0);
-        int impressions = message.getImpressions();
-        int clicks = message.getClicks();
+        Map<String, int[]> counts = new HashMap<String, int[]>();
 
-        int[] reports = counts.get(message.getAggregationKey());
+        String aggregateKey = input.getString(0);
+        int impressions = input.getInteger(1);
+        int clicks = input.getInteger(2);
+
+        int[] reports = counts.get(aggregateKey);
+
         if(reports == null){
             reports = new int[2];
             reports[0] = impressions;
             reports[1] = clicks;
-            counts.put(message.getAggregationKey(), reports);
+            counts.put(aggregateKey, reports);
         }
         else {
             reports[0] += impressions;
             reports[1] += clicks;
         }
 
-        _collector.emit(new Values(message.getAggregationKey(), reports[0], reports[1]));
+        _collector.emit(new Values(aggregateKey, reports[0], reports[1]));
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-
+        declarer.declare(new Fields("key", "impressions", "clicks"));
     }
 }
