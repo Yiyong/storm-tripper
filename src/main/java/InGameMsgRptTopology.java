@@ -22,7 +22,7 @@ public class InGameMsgRptTopology {
         topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5).fieldsGrouping("intermediate", new Fields("message"));
 
         Config conf = new Config();
-        conf.setDebug(true);
+        conf.setDebug(false);
 
         if (args != null && args.length > 0) {
             conf.setNumWorkers(3);

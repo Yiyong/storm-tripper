@@ -26,8 +26,6 @@ public class GenericAggregationBolt extends BaseRichBolt {
 
     @Override
     public void execute(Tuple input) {
-        Map<String, int[]> counts = new HashMap<String, int[]>();
-
         String aggregateKey = input.getString(0);
         int impressions = input.getInteger(1);
         int clicks = input.getInteger(2);
@@ -41,12 +39,14 @@ public class GenericAggregationBolt extends BaseRichBolt {
             counts.put(aggregateKey, reports);
         }
         else {
+            System.err.println("key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
             reports[0] += impressions;
             reports[1] += clicks;
+            System.err.println("key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
         }
 
         _collector.emit(new Values(aggregateKey, reports[0], reports[1]));
-        System.err.println("key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
+        System.err.println("[FINAL] key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
     }
 
     @Override

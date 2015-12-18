@@ -51,7 +51,6 @@ public class RandomRptMsgSpout extends BaseRichSpout {
         List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
         for(List<String> aggregateField: aggregateFields){
             String aggregateKey = message.getAggregationKey(aggregateField);
-            System.out.println(aggregateField + " " + message.getImpressions() + " " + message.getClicks());
             _collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
         }
     }
