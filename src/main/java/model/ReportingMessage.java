@@ -16,7 +16,7 @@ public class ReportingMessage {
     public ReportingMessage(String messageId, String contentId, String country) {
         this.messageId = messageId;
         this.contentId = contentId;
-        this.country = this.country;
+        this.country = country;
     }
 
     public String getContentId() {

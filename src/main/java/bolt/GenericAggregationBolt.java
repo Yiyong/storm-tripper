@@ -46,6 +46,7 @@ public class GenericAggregationBolt extends BaseRichBolt {
         }
 
         _collector.emit(new Values(aggregateKey, reports[0], reports[1]));
+        System.err.println("key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
     }
 
     @Override

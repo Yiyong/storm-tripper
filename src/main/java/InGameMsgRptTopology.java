@@ -1,12 +1,11 @@
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
-import backtype.storm.generated.AlreadyAliveException;
-import backtype.storm.generated.AuthorizationException;
-import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
+import backtype.storm.utils.Utils;
 import bolt.GenericAggregationBolt;
+import bolt.IntermediateBolt;
 import spout.RandomRptMsgSpout;
 
 /**
@@ -18,7 +17,9 @@ public class InGameMsgRptTopology {
 
         topologyBuilder.setSpout("spout", new RandomRptMsgSpout(), 5);
 
-        topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5).fieldsGrouping("spout", new Fields("message"));
+        topologyBuilder.setBolt("intermediate", new IntermediateBolt(), 5).shuffleGrouping("spout");
+
+        topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5).fieldsGrouping("intermediate", new Fields("message"));
 
         Config conf = new Config();
         conf.setDebug(true);
@@ -32,10 +33,11 @@ public class InGameMsgRptTopology {
             conf.setMaxTaskParallelism(3);
 
             LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("poc", conf, topologyBuilder.createTopology());
+            cluster.submitTopology("InGameMsgRpt", conf, topologyBuilder.createTopology());
 
-            Thread.sleep(10000);
+            Utils.sleep(20000);
 
+            cluster.killTopology("InGameMsgRpt");
             cluster.shutdown();
         }
     }
