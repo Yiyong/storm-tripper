@@ -4,6 +4,7 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
+import bolt.CouchbaseBolt;
 import bolt.GenericAggregationBolt;
 import bolt.IntermediateBolt;
 import spout.RandomRptMsgSpout;
@@ -20,6 +21,8 @@ public class InGameMsgRptTopology {
         topologyBuilder.setBolt("intermediate", new IntermediateBolt(), 5).shuffleGrouping("spout");
 
         topologyBuilder.setBolt("aggregate", new GenericAggregationBolt(), 5).fieldsGrouping("intermediate", new Fields("message"));
+
+//        topologyBuilder.setBolt("couchbase", new CouchbaseBolt(), 5).fieldsGrouping("aggregate", new Fields("message"));
 
         Config conf = new Config();
         conf.setDebug(false);
