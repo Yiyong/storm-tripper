@@ -29,8 +29,8 @@ public class GenericAggregationBolt extends BaseRichBolt {
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         _collector = collector;
-        couchbaseCluster = CouchbaseCluster.create("10.102.74.163");
-        bucket = couchbaseCluster.openBucket("aggregate_reporting", "eadpprm$123");
+        couchbaseCluster = CouchbaseCluster.create("*");
+        bucket = couchbaseCluster.openBucket("aggregate_reporting", "*");
     }
 
     @Override

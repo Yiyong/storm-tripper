@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ae8d5593-f4dc-438d-bf58-8d9681a0b4dd" name="Default" comment="implement aggregation bolt with couchbase sync">
+    <list default="true" id="ae8d5593-f4dc-438d-bf58-8d9681a0b4dd" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/spout/RandomRptMsgSpout.class" afterPath="$PROJECT_DIR$/target/classes/spout/RandomRptMsgSpout.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/InGameMsgRptTopology.java" afterPath="$PROJECT_DIR$/src/main/java/InGameMsgRptTopology.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java" afterPath="$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storm-tripper.iml" afterPath="$PROJECT_DIR$/storm-tripper.iml" />
     </list>
     <ignored path="storm-tripper.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -56,8 +53,8 @@
       <file leaf-file-name="GenericAggregationBolt.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.60064584">
-              <caret line="46" column="32" selection-start-line="46" selection-start-column="32" selection-end-line="46" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.4262648">
+              <caret line="37" column="49" selection-start-line="37" selection-start-column="49" selection-end-line="37" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -163,8 +160,8 @@
         <option value="$PROJECT_DIR$/src/main/java/spout/RandomRptMsgSpout.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/bolt/CouchbaseBolt.java" />
-        <option value="$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java" />
         <option value="$PROJECT_DIR$/src/main/java/InGameMsgRptTopology.java" />
+        <option value="$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java" />
       </list>
     </option>
   </component>
@@ -825,7 +822,7 @@
       <workItem from="1449603627926" duration="2094000" />
       <workItem from="1449708158595" duration="21000" />
       <workItem from="1450218588668" duration="8144000" />
-      <workItem from="1450395181299" duration="20463000" />
+      <workItem from="1450395181299" duration="20572000" />
     </task>
     <task id="LOCAL-00001" summary="add aggregate key">
       <created>1450398304559</created>
@@ -857,11 +854,17 @@
       <option name="project" value="LOCAL" />
       <updated>1450407957423</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="implement aggregation bolt with couchbase sync">
+      <created>1450488736800</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1450488736801</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="43867000" />
+    <option name="totallyTimeSpent" value="43976000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="1855" height="1056" extended-state="6" />
@@ -1349,8 +1352,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bolt/GenericAggregationBolt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.60064584">
-          <caret line="46" column="32" selection-start-line="46" selection-start-column="32" selection-end-line="46" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.4262648">
+          <caret line="37" column="49" selection-start-line="37" selection-start-column="49" selection-end-line="37" selection-end-column="49" />
           <folding />
         </state>
       </provider>
