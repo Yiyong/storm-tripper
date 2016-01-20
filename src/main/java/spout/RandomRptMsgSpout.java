@@ -8,6 +8,7 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import model.ReportingMessage;
+import model.ReportingMessageSerializer;
 import utils.PropertiesReader;
 
 import java.util.*;
@@ -18,6 +19,7 @@ import java.util.*;
 public class RandomRptMsgSpout extends BaseRichSpout {
     SpoutOutputCollector _collector;
     Random _rand;
+    ReportingMessageSerializer reportingMessageSerializer = ReportingMessageSerializer.getInstance();
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -37,21 +39,14 @@ public class RandomRptMsgSpout extends BaseRichSpout {
         String[] contentIDsSet = new String[]{"C1", "C2", "C3", "C4"};
         String[] countrySet = new String[]{"US", "GE", "JP", "GB", "CN"};
 
-//        ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
-//                contentIDsSet[_rand.nextInt(contentIDsSet.length)],
-//                countrySet[_rand.nextInt(countrySet.length)]);
-
-        ReportingMessage message = new ReportingMessage(messageIDsSet[0],
-                contentIDsSet[1],
-                countrySet[2]);
+        ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
+                contentIDsSet[_rand.nextInt(contentIDsSet.length)],
+                countrySet[_rand.nextInt(countrySet.length)]);
 
         message.setImpressions(_rand.nextInt(100));
         message.setClicks(_rand.nextInt(10));
+        message.setTimestamp(utils.Utils.getCurrentTimeStamp());
 
-        List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
-        for(List<String> aggregateField: aggregateFields){
-            String aggregateKey = message.getAggregationKey(aggregateField);
-            _collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
-        }
+        _collector.emit(new Values(reportingMessageSerializer.serialize(message)));
     }
 }

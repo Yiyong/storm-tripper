@@ -6,9 +6,11 @@ import java.util.List;
  * Created by Yiyong on 12/6/15.
  */
 public class ReportingMessage {
+
     private String messageId;
     private String contentId;
     private String country;
+    private long timestamp;
 
     private int impressions;
     private int clicks;
@@ -57,6 +59,14 @@ public class ReportingMessage {
 
     public void setClicks(int clicks) {
         this.clicks = clicks;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getAggregationKey(List<String> aggregateFields) {

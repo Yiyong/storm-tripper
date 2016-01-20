@@ -6,13 +6,11 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
-import backtype.storm.tuple.Values;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
-import model.ReportingMessage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,9 +56,8 @@ public class GenericAggregationBolt extends BaseRichBolt {
 
         JsonDocument doc = JsonDocument.create(aggregateKey, reportsJson);
         JsonDocument response = bucket.upsert(doc);
-//
-//        _collector.emit(new Values(aggregateKey, reports[0], reports[1]));
-//        System.err.println("[FINAL] key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
+
+        System.err.println("[FINAL] key: " + aggregateKey + "  impressions: " + reports[0] + " clicks: " + reports[1]);
     }
 
     @Override
