@@ -9,9 +9,9 @@ import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import model.ReportingMessage;
 import model.ReportingMessageSerializer;
-import utils.PropertiesReader;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Yiyong on 11/29/15.

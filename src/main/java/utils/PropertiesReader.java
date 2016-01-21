@@ -1,7 +1,6 @@
 package utils;
 
 import model.TripperPropObj;
-import org.apache.log4j.Logger;
 import org.apache.storm.shade.org.yaml.snakeyaml.Yaml;
 import org.apache.storm.shade.org.yaml.snakeyaml.constructor.Constructor;
 

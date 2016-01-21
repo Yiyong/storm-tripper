@@ -1,4 +1,4 @@
-package bolt;
+package trident.aggregator;
 
 import model.SimpleReportingMessage;
 import storm.trident.operation.CombinerAggregator;

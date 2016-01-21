@@ -5,12 +5,12 @@ import backtype.storm.LocalCluster;
 import backtype.storm.LocalDRPC;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import bolt.GenericHourlyCounter;
-import trident.function.ReportEventsParser;
+import trident.aggregator.GenericHourlyCounter;
 import spout.RandomRptMsgSpout;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
-import storm.trident.testing.MemoryMapState;
+import trident.function.ReportEventsParser;
+import trident.state.CouchbaseMapState;
 import utils.Constants;
 
 /**
@@ -32,7 +32,10 @@ public class InGameMsgRptTrdTopology {
 
     private static void genericReportingEventsProcessing(Stream stream){
         stream.groupBy(new Fields(Constants.AGGREGATE_KEY))
-                .persistentAggregate(new MemoryMapState.Factory(), new GenericHourlyCounter(), new Fields());
+                .persistentAggregate(CouchbaseMapState.FACTORY,
+                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSION, Constants.CLICK),
+                        new GenericHourlyCounter(),
+                        new Fields(Constants.GENERIC_REPORTING));
     }
 
     public static void main(String[] args) {
