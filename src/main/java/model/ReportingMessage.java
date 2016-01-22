@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Yiyong on 12/6/15.
  */
-public class ReportingMessage {
+public class ReportingMessage implements Serializable {
 
     private String messageId;
     private String contentId;

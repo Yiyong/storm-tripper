@@ -2,7 +2,6 @@ package trident;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
-import backtype.storm.LocalDRPC;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import trident.aggregator.GenericHourlyCounter;
@@ -17,14 +16,14 @@ import utils.Constants;
  * Created by yiguo on 1/19/16.
  */
 public class InGameMsgRptTrdTopology {
-    public static StormTopology buildTopology(LocalDRPC drpc){
+    public static StormTopology buildTopology(){
         TridentTopology topology = new TridentTopology();
         Stream reportingEventsStream = topology.
                 newStream("spout", new RandomRptMsgSpout())
                 .parallelismHint(5)
                 .each(new Fields(Constants.EVENT),
                         new ReportEventsParser(),
-                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSION, Constants.CLICK));
+                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS));
 
         genericReportingEventsProcessing(reportingEventsStream);
         return topology.build();
@@ -33,7 +32,7 @@ public class InGameMsgRptTrdTopology {
     private static void genericReportingEventsProcessing(Stream stream){
         stream.groupBy(new Fields(Constants.AGGREGATE_KEY))
                 .persistentAggregate(CouchbaseMapState.FACTORY,
-                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSION, Constants.CLICK),
+                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS),
                         new GenericHourlyCounter(),
                         new Fields(Constants.GENERIC_REPORTING));
     }
@@ -41,14 +40,14 @@ public class InGameMsgRptTrdTopology {
     public static void main(String[] args) {
         Config conf = new Config();
         conf.setMaxSpoutPending(20);
-
-        if(args.length == 0){
-            LocalDRPC drpc = new LocalDRPC();
-            LocalCluster cluster = new LocalCluster();
-            cluster.submitTopology("aggregateReporter", conf, buildTopology(drpc));
-            for(int i = 0; i < 100; i++) {
-                System.out.println("DRPC RESULT: " + drpc.execute("aggregatedKey", "JP"));
-            }
-        }
+        LocalCluster cluster = new LocalCluster();
+        cluster.submitTopology("aggregateReporter", conf, buildTopology());
+//
+//        if(args.length == 0){
+//            LocalDRPC drpc = new LocalDRPC();
+//            for(int i = 0; i < 100; i++) {
+//                System.out.println("DRPC RESULT: " + drpc.execute("aggregatedKey", "JP"));
+//            }
+//        }
     }
 }

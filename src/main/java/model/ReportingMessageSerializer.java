@@ -4,6 +4,7 @@ import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingExcept
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.JsonNode;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectWriter;
+import org.apache.storm.shade.org.apache.commons.lang.SerializationUtils;
 import storm.trident.state.Serializer;
 
 /**
@@ -12,7 +13,6 @@ import storm.trident.state.Serializer;
 public class ReportingMessageSerializer implements Serializer<ReportingMessage> {
     private static final long serialVersionUID = -1864797806751163034L;
     private static ReportingMessageSerializer reportingMessageSerializer;
-    private static ObjectMapper mapper = new ObjectMapper();
 
     private ReportingMessageSerializer(){
 
@@ -28,26 +28,12 @@ public class ReportingMessageSerializer implements Serializer<ReportingMessage> 
 
     @Override
     public byte[] serialize(ReportingMessage obj) {
-        JsonNode objNode = mapper.createObjectNode();
-        ObjectWriter objectWriter = mapper.writer();
-        byte[] bytes = null;
-        try {
-            bytes = objectWriter.writeValueAsBytes(objNode);
-        } catch (JsonProcessingException e) {
-            System.err.println("Error in serializing raw events: " + e);
-        }
+        byte[] bytes = SerializationUtils.serialize(obj);
         return bytes;
     }
 
     @Override
     public ReportingMessage deserialize(byte[] b) {
-        try
-        {
-            return mapper.readValue(b, ReportingMessage.class);
-        } catch (Exception e)
-        {
-            System.err.println("Invalid reporting events: " + e);
-        }
-        return null;
+        return (ReportingMessage) SerializationUtils.deserialize(b);
     }
 }

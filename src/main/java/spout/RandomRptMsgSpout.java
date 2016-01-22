@@ -9,6 +9,7 @@ import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 import model.ReportingMessage;
 import model.ReportingMessageSerializer;
+import utils.Constants;
 
 import java.util.Map;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class RandomRptMsgSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("key", "impressions", "clicks"));
+        declarer.declare(new Fields(Constants.EVENT));
     }
 
     @Override
