@@ -10,7 +10,9 @@ import backtype.storm.utils.Utils;
 import model.ReportingMessage;
 import model.ReportingMessageSerializer;
 import utils.Constants;
+import utils.PropertiesReader;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -25,6 +27,7 @@ public class RandomRptMsgSpout extends BaseRichSpout {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(Constants.EVENT));
+        //declarer.declare(new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS));
     }
 
     @Override
@@ -49,5 +52,13 @@ public class RandomRptMsgSpout extends BaseRichSpout {
         message.setTimestamp(utils.Utils.getCurrentTimeStamp());
 
         _collector.emit(new Values(reportingMessageSerializer.serialize(message)));
+
+        /*
+        List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
+        for(List<String> aggregateField: aggregateFields){
+            String aggregateKey = message.getAggregationKey(aggregateField);
+            _collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
+        }
+        */
     }
 }

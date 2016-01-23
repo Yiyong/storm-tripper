@@ -11,6 +11,8 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import com.sun.org.apache.bcel.internal.classfile.ConstantString;
+import utils.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +29,8 @@ public class GenericAggregationBolt extends BaseRichBolt {
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         _collector = collector;
-        couchbaseCluster = CouchbaseCluster.create("*");
-        bucket = couchbaseCluster.openBucket("aggregate_reporting", "*");
+        couchbaseCluster = CouchbaseCluster.create(Constants.COUCHBASE_CLUSTER);
+        bucket = couchbaseCluster.openBucket(Constants.COUCHBASE_BUCKET_NAME, Constants.COUCHBASE_BUCKET_PASSWORD);
     }
 
     @Override

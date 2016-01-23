@@ -1,9 +1,5 @@
 package model;
 
-import com.couchbase.client.deps.com.fasterxml.jackson.core.JsonProcessingException;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.JsonNode;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectMapper;
-import com.couchbase.client.deps.com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.storm.shade.org.apache.commons.lang.SerializationUtils;
 import storm.trident.state.Serializer;
 

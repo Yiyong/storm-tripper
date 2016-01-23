@@ -6,7 +6,7 @@ import model.SimpleReportingMessage;
 import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import storm.trident.state.map.IBackingMap;
-import storm.trident.state.map.TransactionalMap;
+import storm.trident.state.map.NonTransactionalMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ import java.util.Map;
 /**
  * Created by yiguo on 1/20/16.
  */
-public class CouchbaseMapState<T> implements IBackingMap<SimpleReportingMessage> {
+public class CouchbaseMapState implements IBackingMap<SimpleReportingMessage> {
 
     private CouchbaseDB couchbaseDB;
 
     public static StateFactory FACTORY = new StateFactory() {
         @Override
         public State makeState(Map conf, IMetricsContext metrics, int partitionIndex, int numPartitions) {
-            return TransactionalMap.build(new CouchbaseMapState());
+            return NonTransactionalMap.build(new CouchbaseMapState());
         }
     };
 
@@ -47,7 +47,7 @@ public class CouchbaseMapState<T> implements IBackingMap<SimpleReportingMessage>
     }
 
     @Override
-    public void multiPut(List<List<Object>> keys, List<SimpleReportingMessage> vals) {
-        System.out.println("Here");
+    public void multiPut(List<List<Object>> keys, List<SimpleReportingMessage> simpleReportingMessages) {
+        couchbaseDB.bulkPutSimpleReportingMessage(simpleReportingMessages);
     }
 }

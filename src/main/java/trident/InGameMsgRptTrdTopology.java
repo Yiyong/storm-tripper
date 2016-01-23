@@ -4,10 +4,10 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
-import trident.aggregator.GenericHourlyCounter;
 import spout.RandomRptMsgSpout;
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
+import trident.aggregator.GenericHourlyCounter;
 import trident.function.ReportEventsParser;
 import trident.state.CouchbaseMapState;
 import utils.Constants;
@@ -42,12 +42,5 @@ public class InGameMsgRptTrdTopology {
         conf.setMaxSpoutPending(20);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("aggregateReporter", conf, buildTopology());
-//
-//        if(args.length == 0){
-//            LocalDRPC drpc = new LocalDRPC();
-//            for(int i = 0; i < 100; i++) {
-//                System.out.println("DRPC RESULT: " + drpc.execute("aggregatedKey", "JP"));
-//            }
-//        }
     }
 }

@@ -4,6 +4,7 @@ import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
+import com.couchbase.client.java.document.json.JsonObject;
 import model.SimpleReportingMessage;
 import rx.Observable;
 import rx.functions.Func1;
@@ -83,5 +84,19 @@ public class CouchbaseDB {
         }
 
         return simpleReportingMessageList;
+    }
+
+    public void bulkPutSimpleReportingMessage(List<SimpleReportingMessage> simpleReportingMessages){
+        List<JsonDocument> jsonDocumentList = new ArrayList<JsonDocument>();
+        for(SimpleReportingMessage simpleReportingMessage : simpleReportingMessages){
+            JsonObject reportsJson = JsonObject.empty()
+                    .put(Constants.IMPRESSIONS, simpleReportingMessage.getImpressions())
+                    .put(Constants.CLICKS, simpleReportingMessage.getClicks());
+
+            JsonDocument doc = JsonDocument.create(simpleReportingMessage.getAggregateKey(), reportsJson);
+            jsonDocumentList.add(doc);
+        }
+
+        bulkPut(jsonDocumentList);
     }
 }

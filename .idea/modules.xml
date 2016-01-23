@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/storm-tripper.iml" filepath="$PROJECT_DIR$/storm-tripper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/storm-tropper.iml" filepath="$PROJECT_DIR$/storm-tropper.iml" />
     </modules>
   </component>
 </project>
