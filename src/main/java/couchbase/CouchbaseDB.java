@@ -29,11 +29,11 @@ public class CouchbaseDB {
         bucket = couchbaseCluster.openBucket(Constants.COUCHBASE_BUCKET_NAME, Constants.COUCHBASE_BUCKET_PASSWORD);
     }
 
-    public static CouchbaseDB getCouchbaseDB(){
-        if(couchbaseDB == null){
-            couchbaseDB = new CouchbaseDB();
-        }
+    public static void init(){
+        couchbaseDB = new CouchbaseDB();
+    }
 
+    public static CouchbaseDB getCouchbaseDB(){
         return couchbaseDB;
     }
 
