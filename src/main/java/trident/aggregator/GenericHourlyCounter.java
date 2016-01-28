@@ -20,7 +20,7 @@ public class GenericHourlyCounter implements CombinerAggregator<SimpleReportingM
 
     @Override
     public SimpleReportingMessage combine(SimpleReportingMessage val1, SimpleReportingMessage val2) {
-        return new SimpleReportingMessage(val1.getAggregateKey(),
+        return new SimpleReportingMessage(val2.getAggregateKey(),
                 val1.getImpressions() + val2.getImpressions(),
                 val1.getClicks() + val2.getClicks());
     }
