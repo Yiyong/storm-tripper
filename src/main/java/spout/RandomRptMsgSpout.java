@@ -38,18 +38,18 @@ public class RandomRptMsgSpout extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        Utils.sleep(10);
+        Utils.sleep(100);
         String[] messageIDsSet = new String[]{"M1", "M2", "M3", "M4", "M5"};
         String[] contentIDsSet = new String[]{"C1", "C2", "C3", "C4"};
         String[] countrySet = new String[]{"US", "GE", "JP", "GB", "CN"};
 
-//        ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
-//                contentIDsSet[_rand.nextInt(contentIDsSet.length)],
-//                countrySet[_rand.nextInt(countrySet.length)]);
+        ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
+                contentIDsSet[_rand.nextInt(contentIDsSet.length)],
+                countrySet[_rand.nextInt(countrySet.length)]);
 
-        ReportingMessage message = new ReportingMessage(messageIDsSet[0],
-                contentIDsSet[0],
-                countrySet[0]);
+//        ReportingMessage message = new ReportingMessage(messageIDsSet[0],
+//                contentIDsSet[0],
+//                countrySet[0]);
 
         message.setImpressions(2);
         message.setClicks(1);

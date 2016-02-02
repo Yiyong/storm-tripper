@@ -1,3 +1,5 @@
 ---
 aggregateFieldsList:
 - message
+- message country
+- country

@@ -3,10 +3,11 @@ package trident.state;
 import backtype.storm.task.IMetricsContext;
 import couchbase.CouchbaseDB;
 import model.SimpleReportingMessage;
+import storm.trident.state.OpaqueValue;
 import storm.trident.state.State;
 import storm.trident.state.StateFactory;
-import storm.trident.state.map.IBackingMap;
-import storm.trident.state.map.NonTransactionalMap;
+import storm.trident.state.TransactionalValue;
+import storm.trident.state.map.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class CouchbaseMapState implements IBackingMap<SimpleReportingMessage> {
     public static StateFactory FACTORY = new StateFactory() {
         @Override
         public State makeState(Map conf, IMetricsContext metrics, int partitionIndex, int numPartitions) {
+            //return TransactionalMap.build(new CachedMap(new CouchbaseMapState(), 100));
             return NonTransactionalMap.build(new CouchbaseMapState());
         }
     };

@@ -8,17 +8,15 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
 import couchbase.CouchbaseDB;
 import spout.RandomRptMsgSpout;
-import storm.trident.Stream;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
-import storm.trident.fluent.GroupedStream;
-import storm.trident.operation.builtin.Count;
+import storm.trident.operation.builtin.FilterNull;
 import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.Sum;
+import storm.trident.spout.RichSpoutBatchExecutor;
 import storm.trident.testing.MemoryMapState;
 import storm.trident.testing.Split;
 import trident.aggregator.GenericHourlyCounter;
-import trident.aggregator.GenericLifetimeAggregator;
 import trident.function.ReportEventsParser;
 import trident.state.CouchbaseMapState;
 import utils.Constants;
@@ -41,30 +39,33 @@ public class InGameMsgRptTrdTopology {
                 .project(new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS))
                 .groupBy(new Fields(Constants.AGGREGATE_KEY))
                 .persistentAggregate(
-                        new MemoryMapState.Factory(),
-                        new GenericLifetimeAggregator(),
+                        CouchbaseMapState.FACTORY,
+                        new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS),
+                        new GenericHourlyCounter(),
                         new Fields(Constants.GENERIC_REPORTING)).parallelismHint(5);
-
 
         topology.newDRPCStream("key", drpc)
                 .each(new Fields("args"), new Split(), new Fields(Constants.AGGREGATE_KEY))
-                .stateQuery(reports, new Fields(Constants.AGGREGATE_KEY), new MapGet(), new Fields("reports"));
+                .stateQuery(reports, new Fields(Constants.AGGREGATE_KEY), new MapGet(), new Fields("reports"))
+                .each(new Fields("reports"), new FilterNull());
 
         return topology.build();
     }
 
     public static void main(String[] args) {
         PropertiesReader propertiesReader = PropertiesReader.getPropertiesReader();
-        //CouchbaseDB.init();
+        CouchbaseDB.init();
 
         Config conf = new Config();
-        conf.setMaxSpoutPending(20);
+        conf.setMaxSpoutPending(1);
+        conf.put(RichSpoutBatchExecutor.MAX_BATCH_SIZE_CONF, 1);
+
         LocalCluster cluster = new LocalCluster();
         LocalDRPC drpc = new LocalDRPC();
         cluster.submitTopology("aggregateReporter", conf, buildTopology(drpc));
-        for (int i = 0; i < 10; i++) {
-            System.err.println("DRPC RESULT: " + drpc.execute("key", "msgM1"));
-            Utils.sleep(1000);
+        for (int i = 0; i < 100000; i++) {
+            System.err.println("DRPC RESULT: " + drpc.execute("key", "msgM2"));
+            Utils.sleep(100);
         }
         Utils.sleep(60000);
 
