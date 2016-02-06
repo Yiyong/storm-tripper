@@ -7,6 +7,8 @@ package trident.function;
 import backtype.storm.tuple.Values;
 import model.ReportingMessage;
 import model.ReportingMessageSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
@@ -17,6 +19,8 @@ import java.util.List;
 public class ReportEventsParser extends BaseFunction {
 
     private ReportingMessageSerializer reportingMessageSerializer = ReportingMessageSerializer.getInstance();
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    private PropertiesReader propertiesReader = PropertiesReader.getPropertiesReader();
 
     @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
@@ -25,12 +29,14 @@ public class ReportEventsParser extends BaseFunction {
         ReportingMessage message = reportingMessageSerializer.deserialize(rawEvent);
 
         if(message != null){
-            List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
+            List<List<String>> aggregateFields = propertiesReader.getAggregateFieldsList();
             for(List<String> aggregateField: aggregateFields){
                 String aggregateKey = message.getAggregationKey(aggregateField);
-                collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
+                collector.emit(new Values(aggregateKey, message.getType().toString(), message.getCount()));
             }
         }
-        else System.err.println("Reporting message is null.");
+        else {
+            logger.error("Message is null.");
+        }
     }
 }

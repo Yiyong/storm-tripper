@@ -1,5 +1,9 @@
 package model;
 
+import org.apache.commons.lang3.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,18 +13,28 @@ import java.util.List;
 public class ReportingMessage implements Serializable {
 
     private String messageId;
+    private String destinationId;
+    private String destinationIdentifier;
+    private String segmentId;
     private String contentId;
     private String country;
+    private String city;
     private long timestamp;
 
-    private int impressions;
-    private int clicks;
+    private ReportingEventType type;
+    private int count;
 
-    public ReportingMessage(String messageId, String contentId, String country) {
+    public ReportingMessage(String messageId, String destinationId, String destinationIdentifier, String segmentId, String contentId, String country, String city) {
         this.messageId = messageId;
+        this.destinationId = destinationId;
+        this.destinationIdentifier = destinationIdentifier;
+        this.segmentId = segmentId;
         this.contentId = contentId;
         this.country = country;
+        this.city = city;
     }
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public String getContentId() {
         return contentId;
@@ -46,22 +60,6 @@ public class ReportingMessage implements Serializable {
         this.country = country;
     }
 
-    public int getImpressions() {
-        return impressions;
-    }
-
-    public void setImpressions(int impressions) {
-        this.impressions = impressions;
-    }
-
-    public int getClicks() {
-        return clicks;
-    }
-
-    public void setClicks(int clicks) {
-        this.clicks = clicks;
-    }
-
     public long getTimestamp() {
         return timestamp;
     }
@@ -70,17 +68,83 @@ public class ReportingMessage implements Serializable {
         this.timestamp = timestamp;
     }
 
+    public String getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(String destinationId) {
+        this.destinationId = destinationId;
+    }
+
+    public String getDestinationIdentifier() {
+        return destinationIdentifier;
+    }
+
+    public void setDestinationIdentifier(String destinationIdentifier) {
+        this.destinationIdentifier = destinationIdentifier;
+    }
+
+    public String getSegmentId() {
+        return segmentId;
+    }
+
+    public void setSegmentId(String segmentId) {
+        this.segmentId = segmentId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public ReportingEventType getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        if (EnumUtils.isValidEnum(ReportingEventType.class, type)) {
+            this.type = ReportingEventType.valueOf(type);
+        }
+        else {
+            this.type = ReportingEventType.UNKNOWN;
+            logger.error("Unknown reporting event caught: " + type);
+        }
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
     public String getAggregationKey(List<String> aggregateFields) {
         StringBuilder stringBuilder = new StringBuilder();
         for(String field : aggregateFields){
             if (field.equals("message")) {
                 stringBuilder.append("msg").append(messageId);
             }
+            if (field.equals("destination")) {
+                stringBuilder.append("dst").append(destinationId);
+            }
+            if (field.equals("destination_identifier")) {
+                stringBuilder.append("dsti").append(destinationIdentifier);
+            }
+            if (field.equals("segment")) {
+                stringBuilder.append("seg").append(segmentId);
+            }
             if (field.equals("content")) {
                 stringBuilder.append("cnt").append(contentId);
             }
             if(field.equals("country")) {
                 stringBuilder.append("ctr").append(country);
+            }
+            if (field.equals("city")) {
+                stringBuilder.append("cty").append(city);
             }
         }
         return stringBuilder.toString();

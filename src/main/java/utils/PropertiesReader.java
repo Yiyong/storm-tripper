@@ -16,42 +16,38 @@ import java.util.List;
  */
 public class PropertiesReader {
     private static PropertiesReader propertiesReader;
-    private static TripperPropObj tripperPropObj;
-
-    private static List<List<String>> aggregateFieldsList;
+    private sta TripperPropObj tripperPropObj;
 
     private void init() {
-        this.tripperPropObj = new TripperPropObj();
-        Constructor STPConstructor = new Constructor(TripperPropObj.class);
-        Yaml STPYaml = new Yaml(STPConstructor);
-
+        Yaml yaml = new Yaml();
         try {
-            this.tripperPropObj = (TripperPropObj) STPYaml.load(new FileInputStream(new File(Constants.YAML_CONFIG_PATH)));
-            aggregateFieldsList = new LinkedList<List<String>>();
-            for(String aggregateFields : tripperPropObj.getAggregateFieldsList()){
-                String[] aggregateFieldsArray = aggregateFields.split(Constants.AGGREGATE_FIELD_DELIMITER);
-                aggregateFieldsList.add(Arrays.asList(aggregateFieldsArray));
-            }
+            this.tripperPropObj = yaml.loadAs(new FileInputStream(new File(Constants.YAML_CONFIG_PATH)),
+                    TripperPropObj.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private PropertiesReader(){
+    private PropertiesReader() {
         init();
     }
 
     public static PropertiesReader getPropertiesReader() {
-        if(propertiesReader == null){
+        if (propertiesReader == null) {
             propertiesReader = new PropertiesReader();
         }
         return propertiesReader;
     }
 
-    public static List<List<String>> getAggregateFieldsList() {
-        if(propertiesReader == null){
-            propertiesReader = new PropertiesReader();
-        }
-        return aggregateFieldsList;
+    public List<List<String>> getAggregateFieldsList() {
+        return tripperPropObj.getAggregateFieldsList();
+    }
+
+    public int getMaxBatchSize() {
+        return tripperPropObj.getMaxBatchSize();
+    }
+
+    public int getMaxSpoutPending() {
+        return tripperPropObj.getMaxSpoutPending();
     }
 }

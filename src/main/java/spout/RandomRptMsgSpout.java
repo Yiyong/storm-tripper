@@ -6,13 +6,11 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import backtype.storm.utils.Utils;
 import model.ReportingMessage;
 import model.ReportingMessageSerializer;
 import utils.Constants;
-import utils.PropertiesReader;
+import utils.Utils;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -38,31 +36,32 @@ public class RandomRptMsgSpout extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        Utils.sleep(100);
+        backtype.storm.utils.Utils.sleep(100);
         String[] messageIDsSet = new String[]{"M1", "M2", "M3", "M4", "M5"};
         String[] contentIDsSet = new String[]{"C1", "C2", "C3", "C4"};
+        String[] destinationIDsSet = new String[]{"D1", "D2", "D3", "D4", "D5"};
+        String[] destinationIdentifierSet = new String[]{"DI1", "DI2", "DI3", "DI4", "DI5"};
+        String[] segmentIdSet = new String[]{"S1", "S2"};
         String[] countrySet = new String[]{"US", "GE", "JP", "GB", "CN"};
+        String[] citySet = new String[]{"Xian", "Redwood Shores", "Tokyo", "Mountain View", "Sunnyvale"};
+        String[] typeSet = new String[]{"IMPRESSION", "CLICK", "ERROR", "CONVERSION"};
 
-        ReportingMessage message = new ReportingMessage(messageIDsSet[_rand.nextInt(messageIDsSet.length)],
-                contentIDsSet[_rand.nextInt(contentIDsSet.length)],
-                countrySet[_rand.nextInt(countrySet.length)]);
+        String messageId = messageIDsSet[_rand.nextInt(messageIDsSet.length)];
+        String contentId = contentIDsSet[_rand.nextInt(contentIDsSet.length)];
+        String destinationId = destinationIDsSet[_rand.nextInt(destinationIDsSet.length)];
+        String destinationIdentifier = destinationIdentifierSet[_rand.nextInt(destinationIdentifierSet.length)];
+        String segmentId = segmentIdSet[_rand.nextInt(segmentIdSet.length)];
+        String country = countrySet[_rand.nextInt(countrySet.length)];
+        String city = citySet[_rand.nextInt(citySet.length)];
+        String type = typeSet[_rand.nextInt(typeSet.length)];
 
-//        ReportingMessage message = new ReportingMessage(messageIDsSet[0],
-//                contentIDsSet[0],
-//                countrySet[0]);
+        ReportingMessage message = new ReportingMessage(messageId, destinationId, destinationIdentifier, segmentId, contentId, country, city);
 
-        message.setImpressions(2);
-        message.setClicks(1);
-        message.setTimestamp(utils.Utils.getCurrentTimeStamp());
+        message.setTimestamp(Utils.getCurrentTimeStamp());
+        message.setType(type);
+        message.setCount(_rand.nextInt(20));
 
         _collector.emit(new Values(reportingMessageSerializer.serialize(message)));
-
-        /*
-        List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
-        for(List<String> aggregateField: aggregateFields){
-            String aggregateKey = message.getAggregationKey(aggregateField);
-            _collector.emit(new Values(aggregateKey, message.getImpressions(), message.getClicks()));
-        }
-        */
     }
+
 }

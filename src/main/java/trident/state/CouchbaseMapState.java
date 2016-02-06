@@ -37,7 +37,6 @@ public class CouchbaseMapState implements IBackingMap<SimpleReportingMessage> {
         for(List<Object> object : keys){
             aggregateKeys.add((String) object.get(0));
         }
-
         return aggregateKeys;
     }
 

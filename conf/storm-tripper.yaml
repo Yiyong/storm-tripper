@@ -1,5 +1,11 @@
 ---
 aggregateFieldsList:
-- message
-- message country
-- country
+- [message]
+- [message, country]
+- [country]
+- [country, content]
+- [country, city]
+
+maxSpoutPending: 10
+
+maxBatchSize: 5

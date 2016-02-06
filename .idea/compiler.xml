@@ -24,9 +24,17 @@
         <processorPath useClasspath="true" />
         <module name="storm-tripper" />
       </profile>
+      <profile default="false" name="Annotation profile for storm-tropper" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="storm-tropper" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="storm-tripper" target="1.6" />
+      <module name="storm-tropper" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

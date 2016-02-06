@@ -5,10 +5,12 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import model.ReportingEventType;
 import model.SimpleReportingMessage;
 import rx.Observable;
 import rx.functions.Func1;
 import utils.Constants;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +59,7 @@ public class CouchbaseDB {
                 .flatMap(new Func1<JsonDocument, Observable<JsonDocument>>(){
                     @Override
                     public Observable<JsonDocument> call(JsonDocument docToInsert) {
-                        return bucket.async().insert(docToInsert);
+                        return bucket.async().upsert(docToInsert);
                     }
                 })
                 .toList()
@@ -65,23 +67,69 @@ public class CouchbaseDB {
                 .single();
     }
 
-    public List<SimpleReportingMessage> bulkGetSimpleReportingMessage(List<String> keys){
-        List<JsonDocument> jsonDocumentList = bulkGet(keys);
-        Map<String, SimpleReportingMessage> messageMap = new HashMap<String, SimpleReportingMessage>();
-        for(JsonDocument jsonDocument : jsonDocumentList){
-            messageMap.put(jsonDocument.id(), new SimpleReportingMessage(jsonDocument.id(),
-                    jsonDocument.content().getInt(Constants.IMPRESSIONS),
-                    jsonDocument.content().getInt(Constants.CLICKS)));
-        }
+/*    public List<SimpleReportingMessage> bulkGetSimpleReportingMessage(List<List<String>> keyAndTypes){
+        List<String> keys = keyAndTypes.get(0);
+        List<String> types = keyAndTypes.get(1);
 
+        List<JsonDocument> jsonDocumentList = bulkGet(keys);
         List<SimpleReportingMessage> simpleReportingMessageList = new ArrayList<SimpleReportingMessage>();
 
-        for(String key : keys){
-            if(messageMap.containsKey(key)){
-                simpleReportingMessageList.add(messageMap.get(key));
+        int i = 0;
+        for(JsonDocument jsonDocument : jsonDocumentList){
+            String aggregateKey = jsonDocument.id();
+            while(!keys.get(i).equals(aggregateKey)){
+                simpleReportingMessageList.add(null);
+                i++;
             }
-            else simpleReportingMessageList.add(null);
+            ReportingEventType aggregateType = ReportingEventType.valueOf(types.get(i));
+            String couchbaseStyleType = Utils.reportTypeToCouchbaseKey(aggregateType);
+            if(jsonDocument.content().containsKey(couchbaseStyleType)){
+                int count = jsonDocument.content().getInt(couchbaseStyleType);
+                simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, aggregateType, count));
+            }
+            else {
+                simpleReportingMessageList.add(null);
+            }
+            i++;
         }
+
+        while(i < keys.size()){
+            simpleReportingMessageList.add(null);
+            i++;
+        }
+
+
+        return simpleReportingMessageList;
+    }*/
+
+    public List<SimpleReportingMessage> bulkGetSimpleReportingMessage(List<String> keys) {
+        List<JsonDocument> jsonDocumentList = bulkGet(keys);
+        List<SimpleReportingMessage> simpleReportingMessageList = new ArrayList<SimpleReportingMessage>();
+
+        int i = 0;
+        for(JsonDocument jsonDocument : jsonDocumentList){
+            String aggregateKey = jsonDocument.id();
+            while(!keys.get(i).equals(aggregateKey)){
+                simpleReportingMessageList.add(null);
+                i++;
+            }
+            int impressions = jsonDocument.content().containsKey(Constants.IMPRESSIONS)?
+                    jsonDocument.content().getInt(Constants.IMPRESSIONS) : 0;
+            int clicks = jsonDocument.content().containsKey(Constants.CLICKS)?
+                    jsonDocument.content().getInt(Constants.CLICKS) : 0;
+            int errors = jsonDocument.content().containsKey(Constants.ERRORS)?
+                    jsonDocument.content().getInt(Constants.ERRORS) : 0;
+            int conversions = jsonDocument.content().containsKey(Constants.CONVERSIONS)?
+                    jsonDocument.content().getInt(Constants.CONVERSIONS) : 0;
+            simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, impressions, clicks, errors, conversions));
+            i++;
+        }
+
+        while(i < keys.size()){
+            simpleReportingMessageList.add(null);
+            i++;
+        }
+
 
         return simpleReportingMessageList;
     }
@@ -91,8 +139,9 @@ public class CouchbaseDB {
         for(SimpleReportingMessage simpleReportingMessage : simpleReportingMessages){
             JsonObject reportsJson = JsonObject.empty()
                     .put(Constants.IMPRESSIONS, simpleReportingMessage.getImpressions())
-                    .put(Constants.CLICKS, simpleReportingMessage.getClicks());
-
+                    .put(Constants.CLICKS, simpleReportingMessage.getClicks())
+                    .put(Constants.ERRORS, simpleReportingMessage.getErrors())
+                    .put(Constants.CONVERSIONS, simpleReportingMessage.getConversions());
             JsonDocument doc = JsonDocument.create(simpleReportingMessage.getAggregateKey(), reportsJson);
             jsonDocumentList.add(doc);
         }
