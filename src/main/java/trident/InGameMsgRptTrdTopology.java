@@ -3,6 +3,7 @@ package trident;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.generated.StormTopology;
+import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 import couchbase.CouchbaseDB;
 import spout.RandomRptMsgSpout;
@@ -39,12 +40,15 @@ public class InGameMsgRptTrdTopology {
     }
 
     public static void main(String[] args) {
-        PropertiesReader propertiesReader = PropertiesReader.getPropertiesReader();
+        PropertiesReader.loadProperties();
         CouchbaseDB.init();
 
+        EASpoutConfigurer eaSpoutConfigurer = new EASpoutConfigurer();
+        TopologyBuilder tb = buildTopology(eaSpoutConfigurer);
+
         Config conf = new Config();
-        conf.setMaxSpoutPending(propertiesReader.getMaxSpoutPending());
-        conf.put(RichSpoutBatchExecutor.MAX_BATCH_SIZE_CONF, propertiesReader.getMaxBatchSize());
+        conf.setMaxSpoutPending(PropertiesReader.getMaxSpoutPending());
+        conf.put(RichSpoutBatchExecutor.MAX_BATCH_SIZE_CONF, PropertiesReader.getMaxBatchSize());
 
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("aggregateReporter", conf, buildTopology());

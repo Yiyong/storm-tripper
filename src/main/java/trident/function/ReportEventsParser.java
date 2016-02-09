@@ -20,7 +20,6 @@ public class ReportEventsParser extends BaseFunction {
 
     private ReportingMessageSerializer reportingMessageSerializer = ReportingMessageSerializer.getInstance();
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private PropertiesReader propertiesReader = PropertiesReader.getPropertiesReader();
 
     @Override
     public void execute(TridentTuple tuple, TridentCollector collector) {
@@ -29,7 +28,7 @@ public class ReportEventsParser extends BaseFunction {
         ReportingMessage message = reportingMessageSerializer.deserialize(rawEvent);
 
         if(message != null){
-            List<List<String>> aggregateFields = propertiesReader.getAggregateFieldsList();
+            List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
             for(List<String> aggregateField: aggregateFields){
                 String aggregateKey = message.getAggregationKey(aggregateField);
                 collector.emit(new Values(aggregateKey, message.getType().toString(), message.getCount()));

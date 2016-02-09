@@ -3,6 +3,7 @@ package model;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Constants;
 
 import java.io.Serializable;
 import java.util.List;
@@ -126,27 +127,28 @@ public class ReportingMessage implements Serializable {
         StringBuilder stringBuilder = new StringBuilder();
         for(String field : aggregateFields){
             if (field.equals("message")) {
-                stringBuilder.append("msg").append(messageId);
+                stringBuilder.append("msg").append(messageId).append(Constants.DELIMITER);
             }
             if (field.equals("destination")) {
-                stringBuilder.append("dst").append(destinationId);
+                stringBuilder.append("dst").append(destinationId).append(Constants.DELIMITER);
             }
             if (field.equals("destination_identifier")) {
-                stringBuilder.append("dsti").append(destinationIdentifier);
+                stringBuilder.append("dsti").append(destinationIdentifier).append(Constants.DELIMITER);
             }
             if (field.equals("segment")) {
-                stringBuilder.append("seg").append(segmentId);
+                stringBuilder.append("seg").append(segmentId).append(Constants.DELIMITER);
             }
             if (field.equals("content")) {
-                stringBuilder.append("cnt").append(contentId);
+                stringBuilder.append("cnt").append(contentId).append(Constants.DELIMITER);
             }
             if(field.equals("country")) {
-                stringBuilder.append("ctr").append(country);
+                stringBuilder.append("ctr").append(country).append(Constants.DELIMITER);
             }
             if (field.equals("city")) {
-                stringBuilder.append("cty").append(city);
+                stringBuilder.append("cty").append(city).append(Constants.DELIMITER);
             }
         }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         return stringBuilder.toString();
     }
 }

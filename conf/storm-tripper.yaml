@@ -5,6 +5,7 @@ aggregateFieldsList:
 - [country]
 - [country, content]
 - [country, city]
+- [city, country]
 
 maxSpoutPending: 10
 
