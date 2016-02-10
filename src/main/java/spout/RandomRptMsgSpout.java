@@ -25,7 +25,6 @@ public class RandomRptMsgSpout extends BaseRichSpout {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields(Constants.EVENT));
-        //declarer.declare(new Fields(Constants.AGGREGATE_KEY, Constants.IMPRESSIONS, Constants.CLICKS));
     }
 
     @Override

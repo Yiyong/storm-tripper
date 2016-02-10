@@ -13,6 +13,7 @@ import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
 import utils.PropertiesReader;
+import utils.Utils;
 
 import java.util.List;
 
@@ -27,14 +28,14 @@ public class ReportEventsParser extends BaseFunction {
 
         ReportingMessage message = reportingMessageSerializer.deserialize(rawEvent);
 
-        if(message != null){
+        if (message != null) {
             List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
-            for(List<String> aggregateField: aggregateFields){
+            for (List<String> aggregateField : aggregateFields) {
                 String aggregateKey = message.getAggregationKey(aggregateField);
-                collector.emit(new Values(aggregateKey, message.getType().toString(), message.getCount()));
+                String dateInHour = Utils.getDate(message.getTimestamp());
+                collector.emit(new Values(aggregateKey, dateInHour, message.getType().toString(), message.getCount()));
             }
-        }
-        else {
+        } else {
             logger.error("Message is null.");
         }
     }

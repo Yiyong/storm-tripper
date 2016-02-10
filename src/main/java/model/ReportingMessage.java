@@ -108,8 +108,7 @@ public class ReportingMessage implements Serializable {
     public void setType(String type) {
         if (EnumUtils.isValidEnum(ReportingEventType.class, type)) {
             this.type = ReportingEventType.valueOf(type);
-        }
-        else {
+        } else {
             this.type = ReportingEventType.UNKNOWN;
             logger.error("Unknown reporting event caught: " + type);
         }
@@ -125,7 +124,7 @@ public class ReportingMessage implements Serializable {
 
     public String getAggregationKey(List<String> aggregateFields) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(String field : aggregateFields){
+        for (String field : aggregateFields) {
             if (field.equals("message")) {
                 stringBuilder.append("msg").append(messageId).append(Constants.DELIMITER);
             }
@@ -141,7 +140,7 @@ public class ReportingMessage implements Serializable {
             if (field.equals("content")) {
                 stringBuilder.append("cnt").append(contentId).append(Constants.DELIMITER);
             }
-            if(field.equals("country")) {
+            if (field.equals("country")) {
                 stringBuilder.append("ctr").append(country).append(Constants.DELIMITER);
             }
             if (field.equals("city")) {

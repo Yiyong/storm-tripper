@@ -6,6 +6,7 @@ package utils;
 public class Constants {
     public static final String EVENT = "event";
     public static final String AGGREGATE_KEY = "aggregateKey";
+    public static final String DATE_IN_HOUR = "dateInHour";
     public static final String TYPE = "type";
     public static final String COUNT = "count";
     public static final String IMPRESSIONS = "impressions";
