@@ -23,7 +23,7 @@ public class Utils {
     }
 
     public static String getDate(long timestamp) {
-        Date date = new Date(timestamp);
+        Date date = new Date(timestamp * 1000L);
         return dateFormat.format(date);
     }
 
@@ -36,4 +36,5 @@ public class Utils {
         }
         return true;
     }
+
 }

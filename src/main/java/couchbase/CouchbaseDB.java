@@ -85,7 +85,7 @@ public class CouchbaseDB {
             int errors = 0;
             int conversions = 0;
 
-            Map<String, Map<String, Object>> hourlyReportingMap = new HashMap<String, Map<String, Object>>();
+            Map<String, Map<String, Integer>> hourlyReportingMap = new HashMap<String, Map<String, Integer>>();
 
             for (String key : content.getNames()) {
                 if (key.equals(Constants.IMPRESSIONS)) {
@@ -97,11 +97,17 @@ public class CouchbaseDB {
                 } else if (key.equals(Constants.CONVERSIONS)) {
                     conversions = content.getInt(key);
                 } else if (Utils.isValidDateInHour(key)) {
-                    hourlyReportingMap.put(key, content.getObject(key).toMap());
+                    Map<String, Object> oneHourReportingRawMap = content.getObject(key).toMap();
+                    Map<String, Integer> oneHourReportingMap = new HashMap<String, Integer>();
+
+                    for(String metrics : oneHourReportingRawMap.keySet()){
+                        oneHourReportingMap.put(metrics, (Integer) oneHourReportingRawMap.get(metrics));
+                    }
+                    hourlyReportingMap.put(key, oneHourReportingMap);
                 }
             }
 
-            simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, "", impressions, clicks, errors, conversions));
+            simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, impressions, clicks, errors, conversions, hourlyReportingMap));
             i++;
         }
 

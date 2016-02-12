@@ -15,6 +15,7 @@ public class Constants {
     public static final String CONVERSIONS = "conversions";
     public static final String GENERIC_REPORTING = "generic_reporting";
     public static final String DELIMITER = "$";
+    public static final int REPORTING_HOUR_WINDOW_LENGTH = 4;
 
     public static final String COUCHBASE_CLUSTER = "10.102.74.163";
     public static final String COUCHBASE_BUCKET_NAME = "aggregate_reporting";
