@@ -35,7 +35,7 @@ public class RandomRptMsgSpout extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        backtype.storm.utils.Utils.sleep(100);
+        backtype.storm.utils.Utils.sleep(10);
         String[] messageIDsSet = new String[]{"M1", "M2", "M3", "M4", "M5"};
         String[] contentIDsSet = new String[]{"C1", "C2", "C3", "C4"};
         String[] destinationIDsSet = new String[]{"D1", "D2", "D3", "D4", "D5"};

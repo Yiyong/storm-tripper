@@ -22,7 +22,7 @@ public class InGameMsgRptTrdTopology {
         TridentTopology topology = new TridentTopology();
 
         topology.newStream("spout", new RandomRptMsgSpout())
-                .parallelismHint(5)
+                .parallelismHint(10)
                 .each(new Fields(Constants.EVENT),
                         new ReportEventsParser(),
                         new Fields(Constants.AGGREGATE_KEY, Constants.DATE_IN_HOUR, Constants.TYPE, Constants.COUNT))

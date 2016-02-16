@@ -15,7 +15,7 @@ public class Utils {
 
     private static Logger logger = LoggerFactory.getLogger(Utils.class);
 
-    private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH");
+    private static String dateFormat = "yyyy-MM-dd-HH";
 
     public static long getCurrentTimeStamp() {
         long unixTime = System.currentTimeMillis() / 1000L;
@@ -24,12 +24,12 @@ public class Utils {
 
     public static String getDate(long timestamp) {
         Date date = new Date(timestamp * 1000L);
-        return dateFormat.format(date);
+        return new SimpleDateFormat(dateFormat).format(date);
     }
 
     public static boolean isValidDateInHour(String dateInHour) {
         try {
-            Date date = dateFormat.parse(dateInHour);
+            new SimpleDateFormat(dateFormat).parse(dateInHour);
         } catch (ParseException e) {
             logger.warn("Not recognized field from Couchbase: " + dateInHour);
             return false;

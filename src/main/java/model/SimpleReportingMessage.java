@@ -149,8 +149,9 @@ public class SimpleReportingMessage {
         }
 
         List<String> sortedList = new ArrayList<String>(hourSet);
-        Map<String, Map<String, Integer>> reportingHourlyMap = new HashMap<String, Map<String, Integer>>();
+        Collections.sort(sortedList);
 
+        Map<String, Map<String, Integer>> reportingHourlyMap = new HashMap<String, Map<String, Integer>>();
         for(int i = sortedList.size() - 1; i >= 0 && sortedList.size() - i <= Constants.REPORTING_HOUR_WINDOW_LENGTH; i--){
             String dateInHour = sortedList.get(i);
             Map<String, Integer> hourlyMap = new HashMap<String, Integer>();
