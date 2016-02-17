@@ -34,4 +34,14 @@ public class PropertiesReader {
     public static int getMaxSpoutPending() {
         return propertiesObj.getMaxSpoutPending();
     }
+
+    public static List<String> getAcceptedEventTypeList() {
+        return propertiesObj.getAcceptedEventTypeList();
+    }
+
+    public static boolean isAcceptedEventType(String type) {
+        String trimType = type.toLowerCase();
+        return propertiesObj.getAcceptedEventTypeSet().contains(type)
+                || propertiesObj.getAcceptedEventTypeSet().contains(trimType);
+    }
 }

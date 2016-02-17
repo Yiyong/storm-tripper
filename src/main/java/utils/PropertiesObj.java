@@ -1,17 +1,17 @@
 package utils;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by yiguo on 2/8/16.
  */
 public class PropertiesObj {
     private List<List<String>> aggregateFieldsList;
+    private List<String> acceptedEventTypeList;
     private int maxBatchSize;
     private int maxSpoutPending;
+
+    private Set<String> acceptedEventTypeSet = new HashSet<String>();
 
     public List<List<String>> getAggregateFieldsList() {
         return aggregateFieldsList;
@@ -20,6 +20,17 @@ public class PropertiesObj {
     public void setAggregateFieldsList(List<List<String>> aggregateFieldsList) {
         this.aggregateFieldsList = aggregateFieldsList;
         makeTidyAggregateFieldsList();
+    }
+
+    public List<String> getAcceptedEventTypeList() {
+        return acceptedEventTypeList;
+    }
+
+    public void setAcceptedEventTypeList(List<String> acceptedEventTypeList) {
+        this.acceptedEventTypeList = acceptedEventTypeList;
+        for(String acceptedEventType : acceptedEventTypeList) {
+            acceptedEventTypeSet.add(acceptedEventType);
+        }
     }
 
     public int getMaxBatchSize() {
@@ -36,6 +47,14 @@ public class PropertiesObj {
 
     public void setMaxSpoutPending(int maxSpoutPending) {
         this.maxSpoutPending = maxSpoutPending;
+    }
+
+    public Set<String> getAcceptedEventTypeSet() {
+        return acceptedEventTypeSet;
+    }
+
+    public void setAcceptedEventTypeSet(Set<String> acceptedEventTypeSet) {
+        this.acceptedEventTypeSet = acceptedEventTypeSet;
     }
 
     private void makeTidyAggregateFieldsList() {

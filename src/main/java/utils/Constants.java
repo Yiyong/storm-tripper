@@ -13,6 +13,7 @@ public class Constants {
     public static final String CLICKS = "clicks";
     public static final String ERRORS = "errors";
     public static final String CONVERSIONS = "conversions";
+    public static final String UNKNOW = "unknown";
     public static final String GENERIC_REPORTING = "generic_reporting";
     public static final String DELIMITER = "$";
     public static final int REPORTING_HOUR_WINDOW_LENGTH = 4;

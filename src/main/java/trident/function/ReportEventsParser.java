@@ -28,15 +28,15 @@ public class ReportEventsParser extends BaseFunction {
 
         ReportingMessage message = reportingMessageSerializer.deserialize(rawEvent);
 
-        if (message != null) {
+        if (PropertiesReader.isAcceptedEventType(message.getType())) {
             List<List<String>> aggregateFields = PropertiesReader.getAggregateFieldsList();
             for (List<String> aggregateField : aggregateFields) {
                 String aggregateKey = message.getAggregationKey(aggregateField);
                 String dateInHour = Utils.getDate(message.getTimestamp());
-                collector.emit(new Values(aggregateKey, dateInHour, message.getType().toString(), message.getCount()));
+                collector.emit(new Values(aggregateKey, dateInHour, message.getType(), message.getCount()));
             }
         } else {
-            logger.error("Message is null.");
+            logger.error("Event type not accepted: " + message.getType());
         }
     }
 }

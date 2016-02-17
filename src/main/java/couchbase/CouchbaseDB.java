@@ -5,10 +5,12 @@ import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.document.json.JsonObject;
+import model.ReportingMetrics;
 import model.SimpleReportingMessage;
 import rx.Observable;
 import rx.functions.Func1;
 import utils.Constants;
+import utils.PropertiesReader;
 import utils.Utils;
 
 import java.util.ArrayList;
@@ -66,61 +68,6 @@ public class CouchbaseDB {
                 .single();
     }
 
-    /*
-    public List<SimpleReportingMessage> bulkGetSimpleReportingMessage(List<String> keys) {
-        List<JsonDocument> jsonDocumentList = bulkGet(keys);
-        List<SimpleReportingMessage> simpleReportingMessageList = new ArrayList<SimpleReportingMessage>();
-
-        int i = 0;
-        for (JsonDocument jsonDocument : jsonDocumentList) {
-            String aggregateKey = jsonDocument.id();
-            while (!keys.get(i).equals(aggregateKey)) {
-                simpleReportingMessageList.add(null);
-                i++;
-            }
-
-            JsonObject content = jsonDocument.content();
-
-            int impressions = 0;
-            int clicks = 0;
-            int errors = 0;
-            int conversions = 0;
-
-            Map<String, Map<String, Integer>> hourlyReportingMap = new HashMap<String, Map<String, Integer>>();
-
-            for (String key : content.getNames()) {
-                if (key.equals(Constants.IMPRESSIONS)) {
-                    impressions = content.getInt(key);
-                } else if (key.equals(Constants.CLICKS)) {
-                    clicks = content.getInt(key);
-                } else if (key.equals(Constants.ERRORS)) {
-                    errors = content.getInt(key);
-                } else if (key.equals(Constants.CONVERSIONS)) {
-                    conversions = content.getInt(key);
-                } else if (Utils.isValidDateInHour(key)) {
-                    Map<String, Object> oneHourReportingRawMap = content.getObject(key).toMap();
-                    Map<String, Integer> oneHourReportingMap = new HashMap<String, Integer>();
-
-                    for(String metrics : oneHourReportingRawMap.keySet()){
-                        oneHourReportingMap.put(metrics, (Integer) oneHourReportingRawMap.get(metrics));
-                    }
-                    hourlyReportingMap.put(key, oneHourReportingMap);
-                }
-            }
-
-            simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, impressions, clicks, errors, conversions, hourlyReportingMap));
-            i++;
-        }
-
-        while (i < keys.size()) {
-            simpleReportingMessageList.add(null);
-            i++;
-        }
-
-        return simpleReportingMessageList;
-    }
-    */
-
     public List<SimpleReportingMessage> bulkGetSimpleReportingMessage(List<String> keys) {
         List<JsonDocument> jsonDocumentList = bulkGet(keys);
         Map<String, JsonDocument> jsonDocumentMap = new HashMap<String, JsonDocument>();
@@ -136,34 +83,25 @@ public class CouchbaseDB {
                 simpleReportingMessageList.add(null);
             } else {
                 JsonObject content = jsonDocumentMap.get(aggregateKey).content();
-
-                int impressions = 0;
-                int clicks = 0;
-                int errors = 0;
-                int conversions = 0;
-
-                Map<String, Map<String, Integer>> hourlyReportingMap = new HashMap<String, Map<String, Integer>>();
+                Map<String, ReportingMetrics> hourlyReportingMap = new HashMap<String, ReportingMetrics>();
+                ReportingMetrics reportingMetrics = new ReportingMetrics();
 
                 for (String key : content.getNames()) {
-                    if (key.equals(Constants.IMPRESSIONS)) {
-                        impressions = content.getInt(key);
-                    } else if (key.equals(Constants.CLICKS)) {
-                        clicks = content.getInt(key);
-                    } else if (key.equals(Constants.ERRORS)) {
-                        errors = content.getInt(key);
-                    } else if (key.equals(Constants.CONVERSIONS)) {
-                        conversions = content.getInt(key);
+                    if (PropertiesReader.isAcceptedEventType(key)) {
+                        reportingMetrics.setReportingMetricsMap(key, content.getInt(key));
                     } else if (Utils.isValidDateInHour(key)) {
                         Map<String, Object> oneHourReportingRawMap = content.getObject(key).toMap();
                         Map<String, Integer> oneHourReportingMap = new HashMap<String, Integer>();
 
                         for (String metrics : oneHourReportingRawMap.keySet()) {
-                            oneHourReportingMap.put(metrics, (Integer) oneHourReportingRawMap.get(metrics));
+                            if (PropertiesReader.isAcceptedEventType(metrics)) {
+                                oneHourReportingMap.put(metrics, (Integer) oneHourReportingRawMap.get(metrics));
+                            }
                         }
-                        hourlyReportingMap.put(key, oneHourReportingMap);
+                        hourlyReportingMap.put(key, new ReportingMetrics(oneHourReportingMap));
                     }
                 }
-                simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, impressions, clicks, errors, conversions, hourlyReportingMap));
+                simpleReportingMessageList.add(new SimpleReportingMessage(aggregateKey, reportingMetrics, hourlyReportingMap));
             }
         }
 
@@ -173,15 +111,15 @@ public class CouchbaseDB {
     public void bulkPutSimpleReportingMessage(List<SimpleReportingMessage> simpleReportingMessages) {
         List<JsonDocument> jsonDocumentList = new ArrayList<JsonDocument>();
         for (SimpleReportingMessage simpleReportingMessage : simpleReportingMessages) {
-            JsonObject reportsJson = JsonObject.empty()
-                    .put(Constants.IMPRESSIONS, simpleReportingMessage.getImpressions())
-                    .put(Constants.CLICKS, simpleReportingMessage.getClicks())
-                    .put(Constants.ERRORS, simpleReportingMessage.getErrors())
-                    .put(Constants.CONVERSIONS, simpleReportingMessage.getConversions());
+            JsonObject reportsJson = JsonObject.empty();
+            Map<String, Integer> reportingMetricsMap = simpleReportingMessage.getReportingMetrics().getReportingMetricsMap();
+            for (String metric : reportingMetricsMap.keySet()) {
+                reportsJson.put(metric, reportingMetricsMap.get(metric));
+            }
 
-            Map<String, Map<String, Integer>> hourlyReportingMap = simpleReportingMessage.getHourlyReportingMap();
+            Map<String, ReportingMetrics> hourlyReportingMap = simpleReportingMessage.getHourlyReportingMap();
             for (String dateInHour : hourlyReportingMap.keySet()) {
-                reportsJson.put(dateInHour, hourlyReportingMap.get(dateInHour));
+                reportsJson.put(dateInHour, hourlyReportingMap.get(dateInHour).getReportingMetricsMap());
             }
 
             JsonDocument doc = JsonDocument.create(simpleReportingMessage.getAggregateKey(), reportsJson);

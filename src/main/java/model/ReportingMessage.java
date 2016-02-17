@@ -1,9 +1,9 @@
 package model;
 
-import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Constants;
+import utils.PropertiesReader;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,7 +22,7 @@ public class ReportingMessage implements Serializable {
     private String city;
     private long timestamp;
 
-    private ReportingEventType type;
+    private String type;
     private int count;
 
     public ReportingMessage(String messageId, String destinationId, String destinationIdentifier, String segmentId, String contentId, String country, String city) {
@@ -101,15 +101,15 @@ public class ReportingMessage implements Serializable {
         this.city = city;
     }
 
-    public ReportingEventType getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(String type) {
-        if (EnumUtils.isValidEnum(ReportingEventType.class, type)) {
-            this.type = ReportingEventType.valueOf(type);
+        if (PropertiesReader.isAcceptedEventType(type)) {
+            this.type = type;
         } else {
-            this.type = ReportingEventType.UNKNOWN;
+            this.type = Constants.UNKNOW;
             logger.error("Unknown reporting event caught: " + type);
         }
     }

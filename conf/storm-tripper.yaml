@@ -5,7 +5,13 @@ aggregateFieldsList:
 - [country]
 - [country, content]
 - [country, city]
-- [city, country]
+
+acceptedEventTypeList:
+- impression
+- click
+- error
+- conversion
+- send
 
 maxSpoutPending: 10
 

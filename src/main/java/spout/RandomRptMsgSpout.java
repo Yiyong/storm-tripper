@@ -43,7 +43,7 @@ public class RandomRptMsgSpout extends BaseRichSpout {
         String[] segmentIdSet = new String[]{"S1", "S2"};
         String[] countrySet = new String[]{"US", "GE", "JP", "GB", "CN"};
         String[] citySet = new String[]{"Xian", "Redwood Shores", "Tokyo", "Mountain View", "Sunnyvale"};
-        String[] typeSet = new String[]{"IMPRESSION", "CLICK", "ERROR", "CONVERSION"};
+        String[] typeSet = new String[]{"IMPRESSION", "CLICK", "ERROR", "CONVERSION", "SEND"};
 
         String messageId = messageIDsSet[_rand.nextInt(messageIDsSet.length)];
         String contentId = contentIDsSet[_rand.nextInt(contentIDsSet.length)];
